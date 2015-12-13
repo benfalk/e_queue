@@ -1,0 +1,2 @@
+defmodule EQueue do
+end
