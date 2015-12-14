@@ -1,5 +1,5 @@
 defmodule EQueueTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest EQueue
 
   test "the truth" do
