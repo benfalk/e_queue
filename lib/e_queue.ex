@@ -12,29 +12,30 @@ defmodule EQueue do
 
   Entering at the front and exiting at the rear are reverse operations on the queue.
   """
-  @type t :: {[any],[any]}
 
+  defstruct data: :queue.new
+  @type t :: %EQueue{data: {[any],[any]} }
 
   @doc """
   Returns an empty queue
 
   == Example
   iex> EQueue.new
-  {[],[]}
+  #EQueue<[]>
   """
   @spec new :: EQueue.t
-  def new(), do: :queue.new
+  def new(), do: %EQueue{}
 
 
   @doc """
   Calculates and returns the length of given queue
 
   == Example
-  iex> {[:a,:b],[:c]} |> EQueue.length
+  iex> EQueue.from_list([:a, :b, :c]) |> EQueue.length
   3
   """
   @spec length(EQueue.t) :: pos_integer()
-  def length(queue), do: :queue.len(queue)
+  def length(%EQueue{data: queue}), do: :queue.len(queue)
 
 
   @doc """
@@ -42,10 +43,10 @@ defmodule EQueue do
 
   == Example
   iex> EQueue.new |> EQueue.add(:a)
-  {[:a],[]}
+  #EQueue<[:a]>
   """
   @spec add(EQueue.t, any) :: EQueue.t
-  def add(queue, item), do: :queue.in(item, queue)
+  def add(%EQueue{data: queue}, item), do: :queue.in(item, queue) |> wrap
 
 
   @doc """
@@ -55,17 +56,17 @@ defmodule EQueue do
 
   == Example
   iex> EQueue.new |> EQueue.add(:a) |> EQueue.add(:b) |> EQueue.take
-  {:value, :a, {[],[:b]}}
+  {:value, :a, %EQueue{data: {[], [:b]} }}
 
   iex> EQueue.new |> EQueue.take
-  {:empty, {[],[]}}
+  {:empty, EQueue.new}
   """
   @spec take(EQueue.t) :: {:value, any, EQueue.t}
                         | {:empty, EQueue.t}
-  def take(queue) do
+  def take(%EQueue{data: queue}) do
     case :queue.out(queue) do
-      {{:value, value}, new_queue} -> {:value, value, new_queue}
-      {:empty, ^queue} -> {:empty, queue}
+      {{:value, value}, new_queue} -> {:value, value, wrap(new_queue)}
+      {:empty, ^queue} -> {:empty, wrap(queue)}
     end
   end
 
@@ -75,11 +76,11 @@ defmodule EQueue do
   the front item of the queue will become the head of the list.
 
   == Example
-  iex> {[5, 4], [1, 2, 3]} |> EQueue.to_list
+  iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.to_list
   [1, 2, 3, 4, 5]
   """
   @spec to_list(EQueue.t) :: [any]
-  def to_list(queue), do: :queue.to_list(queue)
+  def to_list(%EQueue{data: queue}), do: :queue.to_list(queue)
 
 
   @doc """
@@ -88,21 +89,21 @@ defmodule EQueue do
 
   == Example
   iex> EQueue.from_list [1, 2, 3, 4, 5]
-  {[5, 4], [1, 2, 3]}
+  #EQueue<[1, 2, 3, 4, 5]>
   """
   @spec from_list([any]) :: EQueue.t
-  def from_list(list), do: :queue.from_list(list)
+  def from_list(list), do: :queue.from_list(list) |> wrap
 
 
   @doc """
   Returns a new queue with the items for the given queue in reverse order
 
   == Example
-  iex> {[5, 4], [1, 2, 3]} |> EQueue.reverse
-  {[1, 2, 3], [5, 4]}
+  iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.reverse
+  #EQueue<[5, 4, 3, 2, 1]>
   """
   @spec reverse(EQueue.t) :: EQueue.t
-  def reverse(queue), do: :queue.reverse(queue)
+  def reverse(%EQueue{data: queue}), do: :queue.reverse(queue) |> wrap
 
 
   @doc """
@@ -111,14 +112,17 @@ defmodule EQueue do
   queue or past the length an argument error is raised
 
   == Example
-  iex> {[5, 4], [1, 2, 3]} |> EQueue.split(3)
-  {{[3], [1, 2]}, {[5], [4]}}
+  iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.split(3)
+  {EQueue.from_list([1,2,3]), EQueue.from_list([4,5])}
 
-  iex> {[5, 4], [1, 2, 3]} |> EQueue.split(12)
+  iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.split(12)
   ** (ArgumentError) argument error
   """
   @spec split(EQueue.t, pos_integer()) :: {EQueue.t, EQueue.t}
-  def split(queue, amount), do: :queue.split(amount, queue)
+  def split(%EQueue{data: queue}, amount) do
+    {left, right} = :queue.split(amount, queue)
+    {wrap(left), wrap(right)}
+  end
 
 
   @doc """
@@ -126,11 +130,13 @@ defmodule EQueue do
   the end of the first queue given
 
   == Example
-  iex> {[1], []} |> EQueue.join({[2], []})
-  {[2], [1]}
+  iex> EQueue.from_list([1]) |> EQueue.join(EQueue.from_list([2]))
+  #EQueue<[1, 2]>
   """
   @spec join(EQueue.t, EQueue.t) :: EQueue.t
-  def join(front, back), do: :queue.join(front, back)
+  def join(%EQueue{data: front}, %EQueue{data: back}) do
+    :queue.join(front, back) |> wrap
+  end
 
 
   @doc """
@@ -138,39 +144,39 @@ defmodule EQueue do
   order as the one given where the function returns true for an element
 
   == Example
-  iex> {[5, 4], [1, 2, 3]} |> EQueue.filter(fn x -> rem(x, 2) == 0 end)
-  {[4], [2]}
+  iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.filter(fn x -> rem(x, 2) == 0 end)
+  #EQueue<[2, 4]>
   """
   @spec filter(EQueue.t, Fun) :: EQueue.t
-  def filter(queue, fun), do: :queue.filter(fun, queue)
+  def filter(%EQueue{data: queue}, fun), do: :queue.filter(fun, queue) |> wrap
 
 
   @doc """
   Returns true if the given element is in the queue, false otherwise
 
   == Example
-  iex> {[5, 4], [1, 2, 3]} |> EQueue.member? 2
+  iex> EQueue.from_list([1, 2, 3]) |> EQueue.member? 2
   true
 
-  iex> {[5, 4], [1, 2, 3]} |> EQueue.member? 9
+  iex> EQueue.from_list([1, 2, 3]) |> EQueue.member? 9
   false
   """
   @spec member?(EQueue.t, any) :: true | false
-  def member?(queue, item), do: :queue.member(item, queue)
+  def member?(%EQueue{data: queue}, item), do: :queue.member(item, queue)
 
 
   @doc """
   Returns true if the given queue is empty, false otherwise
 
   == Example
-  iex> {[5, 4], [1, 2, 3]} |> EQueue.empty?
+  iex> EQueue.from_list([1, 2, 3]) |> EQueue.empty?
   false
 
   iex> EQueue.new |> EQueue.empty?
   true
   """
   @spec empty?(EQueue.t) :: true | false
-  def empty?(queue), do: :queue.is_empty(queue)
+  def empty?(%EQueue{data: queue}), do: :queue.is_empty(queue)
 
 
   @doc """
@@ -183,5 +189,11 @@ defmodule EQueue do
   false
   """
   @spec is_queue?(any) :: true | false
-  def is_queue?(item), do: :queue.is_queue(item)
+  def is_queue?(%EQueue{data: queue}), do: :queue.is_queue(queue)
+  def is_queue?(_), do: false
+
+
+  @doc false
+  @spec wrap({[any], [any]}) :: EQueue.t
+  defp wrap(data), do: %EQueue{data: data}
 end
