@@ -42,11 +42,11 @@ defmodule EQueue do
   Adds an item to the end of the queue, returns the resulting queue
 
   == Example
-  iex> EQueue.new |> EQueue.add(:a)
+  iex> EQueue.new |> EQueue.push(:a)
   #EQueue<[:a]>
   """
-  @spec add(EQueue.t, any) :: EQueue.t
-  def add(%EQueue{data: queue}, item), do: :queue.in(item, queue) |> wrap
+  @spec push(EQueue.t, any) :: EQueue.t
+  def push(%EQueue{data: queue}, item), do: :queue.in(item, queue) |> wrap
 
 
   @doc """
@@ -55,15 +55,15 @@ defmodule EQueue do
   the tuple {:empty, Q1} is returned.
 
   == Example
-  iex> EQueue.new |> EQueue.add(:a) |> EQueue.add(:b) |> EQueue.take
+  iex> EQueue.from_list([:a, :b]) |> EQueue.pop
   {:value, :a, %EQueue{data: {[], [:b]} }}
 
-  iex> EQueue.new |> EQueue.take
+  iex> EQueue.new |> EQueue.pop
   {:empty, EQueue.new}
   """
-  @spec take(EQueue.t) :: {:value, any, EQueue.t}
+  @spec pop(EQueue.t) :: {:value, any, EQueue.t}
                         | {:empty, EQueue.t}
-  def take(%EQueue{data: queue}) do
+  def pop(%EQueue{data: queue}) do
     case :queue.out(queue) do
       {{:value, value}, new_queue} -> {:value, value, wrap(new_queue)}
       {:empty, ^queue} -> {:empty, wrap(queue)}
