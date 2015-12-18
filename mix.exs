@@ -5,6 +5,8 @@ defmodule EQueue.Mixfile do
     [app: :e_queue,
      version: "1.0.0",
      elixir: "~> 1.1",
+     description: description,
+     package: package,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps]
@@ -28,5 +30,22 @@ defmodule EQueue.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     []
+  end
+
+  defp description do
+    """
+    An Elixir wrapper around the Erlang optimized `queue` that supports the FIFO,
+    first-in first-out, pattern.  This is useful is when you can't predict when an
+    item needs to be taken or added to the queue.  Use this instead of using `++` or
+    double reversing lists to add items to the "back" of a queue.
+    """
+  end
+
+  defp package do
+    [
+      maintainers: ["Benjamin Falk"],
+      links: %{"GitHub" => "https://github.com/benfalk/e_queue"},
+      licenses: ["MIT License"]
+    ]
   end
 end

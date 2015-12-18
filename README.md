@@ -24,8 +24,6 @@ IO.puts "#{inspect :timer.tc(EQueue.Performance, :test_queue, [EQueue.new])}"
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
-
   1. Add e_queue to your list of dependencies in `mix.exs`:
 
         def deps do
