@@ -19,9 +19,9 @@ defmodule EQueue do
   @doc """
   Returns an empty queue
 
-  == Example
-  iex> EQueue.new
-  #EQueue<[]>
+  ## Example
+      iex> EQueue.new
+      #EQueue<[]>
   """
   @spec new :: EQueue.t
   def new(), do: %EQueue{}
@@ -30,9 +30,9 @@ defmodule EQueue do
   @doc """
   Calculates and returns the length of given queue
 
-  == Example
-  iex> EQueue.from_list([:a, :b, :c]) |> EQueue.length
-  3
+  ## Example
+      iex> EQueue.from_list([:a, :b, :c]) |> EQueue.length
+      3
   """
   @spec length(EQueue.t) :: pos_integer()
   def length(%EQueue{data: queue}), do: :queue.len(queue)
@@ -41,25 +41,25 @@ defmodule EQueue do
   @doc """
   Adds an item to the end of the queue, returns the resulting queue
 
-  == Example
-  iex> EQueue.new |> EQueue.push(:a)
-  #EQueue<[:a]>
+  ## Example
+      iex> EQueue.new |> EQueue.push(:a)
+      #EQueue<[:a]>
   """
   @spec push(EQueue.t, any) :: EQueue.t
   def push(%EQueue{data: queue}, item), do: :queue.in(item, queue) |> wrap
 
 
   @doc """
-  Removes the item at the front of queue. Returns the tuple {:value, item, Q2},
+  Removes the item at the front of queue. Returns the tuple `{:value, item, Q2}`,
   where item is the item removed and Q2 is the resulting queue. If Q1 is empty,
-  the tuple {:empty, Q1} is returned.
+  the tuple `{:empty, Q1}` is returned.
 
-  == Example
-  iex> EQueue.from_list([:a, :b]) |> EQueue.pop
-  {:value, :a, %EQueue{data: {[], [:b]} }}
+  ## Examples
+      iex> EQueue.from_list([:a, :b]) |> EQueue.pop
+      {:value, :a, %EQueue{data: {[], [:b]} }}
 
-  iex> EQueue.new |> EQueue.pop
-  {:empty, EQueue.new}
+      iex> EQueue.new |> EQueue.pop
+      {:empty, EQueue.new}
   """
   @spec pop(EQueue.t) :: {:value, any, EQueue.t}
                         | {:empty, EQueue.t}
@@ -75,9 +75,9 @@ defmodule EQueue do
   Returns a list of the items in the queue in the same order;
   the front item of the queue will become the head of the list.
 
-  == Example
-  iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.to_list
-  [1, 2, 3, 4, 5]
+  ## Example
+      iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.to_list
+      [1, 2, 3, 4, 5]
   """
   @spec to_list(EQueue.t) :: [any]
   def to_list(%EQueue{data: queue}), do: :queue.to_list(queue)
@@ -87,9 +87,9 @@ defmodule EQueue do
   Returns a queue containing the items in L in the same order;
   the head item of the list will become the front item of the queue.
 
-  == Example
-  iex> EQueue.from_list [1, 2, 3, 4, 5]
-  #EQueue<[1, 2, 3, 4, 5]>
+  ## Example
+      iex> EQueue.from_list [1, 2, 3, 4, 5]
+      #EQueue<[1, 2, 3, 4, 5]>
   """
   @spec from_list([any]) :: EQueue.t
   def from_list(list), do: :queue.from_list(list) |> wrap
@@ -98,9 +98,9 @@ defmodule EQueue do
   @doc """
   Returns a new queue with the items for the given queue in reverse order
 
-  == Example
-  iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.reverse
-  #EQueue<[5, 4, 3, 2, 1]>
+  ## Example
+      iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.reverse
+      #EQueue<[5, 4, 3, 2, 1]>
   """
   @spec reverse(EQueue.t) :: EQueue.t
   def reverse(%EQueue{data: queue}), do: :queue.reverse(queue) |> wrap
@@ -111,12 +111,12 @@ defmodule EQueue do
   the amount given and Q2 holds the rest.  If attempted to split an empty
   queue or past the length an argument error is raised
 
-  == Example
-  iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.split(3)
-  {EQueue.from_list([1,2,3]), EQueue.from_list([4,5])}
+  ## Examples
+      iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.split(3)
+      {EQueue.from_list([1,2,3]), EQueue.from_list([4,5])}
 
-  iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.split(12)
-  ** (ArgumentError) argument error
+      iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.split(12)
+      ** (ArgumentError) argument error
   """
   @spec split(EQueue.t, pos_integer()) :: {EQueue.t, EQueue.t}
   def split(%EQueue{data: queue}, amount) do
@@ -129,9 +129,9 @@ defmodule EQueue do
   Given two queues, an new queue is returned with the second appended to
   the end of the first queue given
 
-  == Example
-  iex> EQueue.from_list([1]) |> EQueue.join(EQueue.from_list([2]))
-  #EQueue<[1, 2]>
+  ## Example
+      iex> EQueue.from_list([1]) |> EQueue.join(EQueue.from_list([2]))
+      #EQueue<[1, 2]>
   """
   @spec join(EQueue.t, EQueue.t) :: EQueue.t
   def join(%EQueue{data: front}, %EQueue{data: back}) do
@@ -143,9 +143,9 @@ defmodule EQueue do
   With a given queue and function, a new queue is returned in the same
   order as the one given where the function returns true for an element
 
-  == Example
-  iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.filter(fn x -> rem(x, 2) == 0 end)
-  #EQueue<[2, 4]>
+  ## Example
+      iex> EQueue.from_list([1, 2, 3, 4, 5]) |> EQueue.filter(fn x -> rem(x, 2) == 0 end)
+      #EQueue<[2, 4]>
   """
   @spec filter(EQueue.t, Fun) :: EQueue.t
   def filter(%EQueue{data: queue}, fun), do: :queue.filter(fun, queue) |> wrap
@@ -154,12 +154,12 @@ defmodule EQueue do
   @doc """
   Returns true if the given element is in the queue, false otherwise
 
-  == Example
-  iex> EQueue.from_list([1, 2, 3]) |> EQueue.member? 2
-  true
+  ## Examples
+      iex> EQueue.from_list([1, 2, 3]) |> EQueue.member? 2
+      true
 
-  iex> EQueue.from_list([1, 2, 3]) |> EQueue.member? 9
-  false
+      iex> EQueue.from_list([1, 2, 3]) |> EQueue.member? 9
+      false
   """
   @spec member?(EQueue.t, any) :: true | false
   def member?(%EQueue{data: queue}, item), do: :queue.member(item, queue)
@@ -168,12 +168,12 @@ defmodule EQueue do
   @doc """
   Returns true if the given queue is empty, false otherwise
 
-  == Example
-  iex> EQueue.from_list([1, 2, 3]) |> EQueue.empty?
-  false
+  ## Examples
+      iex> EQueue.from_list([1, 2, 3]) |> EQueue.empty?
+      false
 
-  iex> EQueue.new |> EQueue.empty?
-  true
+      iex> EQueue.new |> EQueue.empty?
+      true
   """
   @spec empty?(EQueue.t) :: true | false
   def empty?(%EQueue{data: queue}), do: :queue.is_empty(queue)
@@ -182,11 +182,12 @@ defmodule EQueue do
   @doc """
   Returns true if the given item is a queue, false otherwise
 
-  iex> EQueue.new |> EQueue.is_queue?
-  true
+  ## Examples
+      iex> EQueue.new |> EQueue.is_queue?
+      true
 
-  iex> {:a_queue?, [], []} |> EQueue.is_queue?
-  false
+      iex> {:a_queue?, [], []} |> EQueue.is_queue?
+      false
   """
   @spec is_queue?(any) :: true | false
   def is_queue?(%EQueue{data: queue}), do: :queue.is_queue(queue)
