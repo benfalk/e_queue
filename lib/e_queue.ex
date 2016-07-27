@@ -194,6 +194,84 @@ defmodule EQueue do
   def is_queue?(_), do: false
 
 
+  @doc """
+  Returns the item at the front of the queue.
+  Returns the tuple `{:value, item, Q1}`.
+  If Q1 is empty, the tuple `{:empty, Q1}` is returned.
+
+  ## Examples
+      iex> EQueue.from_list([1, 2]) |> EQueue.head
+      {:value, 1, EQueue.from_list([1, 2]) }
+
+      iex> EQueue.from_list([1]) |> EQueue.head
+      {:value, 1, EQueue.from_list([1])}
+
+      iex> EQueue.new |> EQueue.head
+      {:empty, EQueue.new}
+  """
+  @spec head(EQueue.t) :: {:value, any, EQueue.t}
+                        | {:empty, EQueue.t}
+  def head(q = %EQueue{data: data}) do
+    if q |> empty? do
+      {:empty, q}
+    else
+      {:value, :queue.head(data), q}
+    end
+  end
+
+
+  @doc """
+  Returns the item at the end of the queue.
+  Returns the tuple `{:value, item, Q1}`.
+  If Q1 is empty, the tuple `{:empty, Q1}` is returned.
+
+  ## Examples
+      iex> EQueue.from_list([1, 2]) |> EQueue.last
+      {:value, 2, EQueue.from_list([1, 2]) }
+
+      iex> EQueue.from_list([1]) |> EQueue.last
+      {:value, 1, EQueue.from_list([1]) }
+
+      iex> EQueue.new |> EQueue.last
+      {:empty, EQueue.new}
+  """
+  @spec last(EQueue.t) :: {:value, any, EQueue.t}
+                        | {:empty, EQueue.t}
+  def last(q = %EQueue{data: data}) do
+    if q |> empty? do
+      {:empty, q}
+    else
+      {:value, :queue.last(data), q}
+    end
+  end
+
+
+  @doc """
+  Removes the item at the front of the queue, returns the resulting queue.
+
+  ## Example
+      iex> EQueue.from_list([1,2,3]) |> EQueue.tail
+      #EQueue<[2, 3]>
+
+      iex> EQueue.from_list([1,2]) |> EQueue.tail
+      #EQueue<[2]>
+
+      iex> EQueue.from_list([1]) |> EQueue.tail
+      #EQueue<[]>
+
+      iex> EQueue.new |> EQueue.tail
+      #EQueue<[]>
+  """
+  @spec tail(EQueue.t) :: EQueue.t
+  def tail(q = %EQueue{data: queue}) do
+    if q |> empty? do
+      q
+    else
+      :queue.tail(queue) |> wrap
+    end
+  end
+
+
   @doc false
   @spec wrap({[any], [any]}) :: EQueue.t
   defp wrap(data), do: %EQueue{data: data}
