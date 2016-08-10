@@ -3,7 +3,7 @@ defmodule EQueue.Mixfile do
 
   def project do
     [app: :e_queue,
-     version: "1.0.1",
+     version: "1.1.0",
      elixir: "~> 1.1",
      description: description,
      package: package,

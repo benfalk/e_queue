@@ -50,23 +50,22 @@ defmodule EQueue do
 
 
   @doc """
-  Removes the item at the front of queue. Returns the tuple `{:value, item, Q2}`,
+  Removes the item at the front of queue. Returns the tuple `{{:value, item}, Q2}`,
   where item is the item removed and Q2 is the resulting queue. If Q1 is empty,
   the tuple `{:empty, Q1}` is returned.
 
   ## Examples
       iex> EQueue.from_list([:a, :b]) |> EQueue.pop
-      {:value, :a, %EQueue{data: {[], [:b]} }}
+      {{:value, :a}, %EQueue{data: {[], [:b]} }}
 
       iex> EQueue.new |> EQueue.pop
       {:empty, EQueue.new}
   """
-  @spec pop(EQueue.t) :: {:value, any, EQueue.t}
+  @spec pop(EQueue.t) :: {{:value, any}, EQueue.t}
                         | {:empty, EQueue.t}
   def pop(%EQueue{data: queue}) do
     case :queue.out(queue) do
-      {{:value, value}, new_queue} -> {:value, value, wrap(new_queue)}
-      {:empty, ^queue} -> {:empty, wrap(queue)}
+      {val, queue} -> {val, wrap(queue)}
     end
   end
 
@@ -196,52 +195,52 @@ defmodule EQueue do
 
   @doc """
   Returns the item at the front of the queue.
-  Returns the tuple `{:value, item, Q1}`.
+  Returns the tuple `{{:value, item}, Q1}`.
   If Q1 is empty, the tuple `{:empty, Q1}` is returned.
 
   ## Examples
       iex> EQueue.from_list([1, 2]) |> EQueue.head
-      {:value, 1, EQueue.from_list([1, 2]) }
+      {{:value, 1}, EQueue.from_list([1, 2]) }
 
       iex> EQueue.from_list([1]) |> EQueue.head
-      {:value, 1, EQueue.from_list([1])}
+      {{:value, 1}, EQueue.from_list([1])}
 
       iex> EQueue.new |> EQueue.head
       {:empty, EQueue.new}
   """
-  @spec head(EQueue.t) :: {:value, any, EQueue.t}
+  @spec head(EQueue.t) :: {{:value, any}, EQueue.t}
                         | {:empty, EQueue.t}
   def head(q = %EQueue{data: data}) do
     if q |> empty? do
       {:empty, q}
     else
-      {:value, :queue.head(data), q}
+      {{:value, :queue.head(data)}, q}
     end
   end
 
 
   @doc """
   Returns the item at the end of the queue.
-  Returns the tuple `{:value, item, Q1}`.
+  Returns the tuple `{{:value, item}, Q1}`.
   If Q1 is empty, the tuple `{:empty, Q1}` is returned.
 
   ## Examples
       iex> EQueue.from_list([1, 2]) |> EQueue.last
-      {:value, 2, EQueue.from_list([1, 2]) }
+      {{:value, 2}, EQueue.from_list([1, 2]) }
 
       iex> EQueue.from_list([1]) |> EQueue.last
-      {:value, 1, EQueue.from_list([1]) }
+      {{:value, 1}, EQueue.from_list([1]) }
 
       iex> EQueue.new |> EQueue.last
       {:empty, EQueue.new}
   """
-  @spec last(EQueue.t) :: {:value, any, EQueue.t}
+  @spec last(EQueue.t) :: {{:value, any}, EQueue.t}
                         | {:empty, EQueue.t}
   def last(q = %EQueue{data: data}) do
     if q |> empty? do
       {:empty, q}
     else
-      {:value, :queue.last(data), q}
+      {{:value, :queue.last(data)}, q}
     end
   end
 

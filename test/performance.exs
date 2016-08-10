@@ -16,14 +16,14 @@ defmodule EQueue.Performance do
     end)
     Agent.stop(queue)
   end
-  
+
   defp pop([]), do: {:empty, []}
-  defp pop([h|t] = from) when is_list(from), do: {:value, h, t}
+  defp pop([h|t] = from) when is_list(from), do: {{:value, h}, t}
   defp pop(queue = %EQueue{}), do: EQueue.pop(queue)
 
   defp pop_agent(agent), do: Agent.get_and_update(agent, fn state ->
     case pop(state) do
-      {:value, item, queue} -> {item, queue}
+      {{:value, item}, queue} -> {item, queue}
       {:empty, queue} -> {:empty, queue}
     end
   end)

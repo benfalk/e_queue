@@ -14,7 +14,7 @@ defimpl Enumerable, for: EQueue do
   """
   @spec member?(EQueue.t, any) :: {:ok, true} | {:ok, false}
   def member?(queue = %EQueue{}, term), do: {:ok, EQueue.member?(queue, term)}
-  
+
 
   @doc """
   == Example
@@ -28,7 +28,7 @@ defimpl Enumerable, for: EQueue do
   end
   def reduce(@empty_queue,      {:cont, acc}, _fun), do: {:done, acc}
   def reduce(queue = %EQueue{}, {:cont, acc}, fun) do
-    {:value, item, remaining} = EQueue.pop(queue)
+    {{:value, item}, remaining} = EQueue.pop(queue)
     reduce(remaining, fun.(item, acc), fun)
   end
 
