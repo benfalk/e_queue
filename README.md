@@ -1,6 +1,7 @@
-# EQueue
+# EQ
 
-[![Build Status](https://travis-ci.org/benfalk/e_queue.svg?branch=master)](https://travis-ci.org/benfalk/e_queue)
+Based on [`EQueue` by Ben Falk](https://github.com/benfalk/e_queue) with some
+additions and improvements.
 
 ## Description
 
@@ -15,10 +16,10 @@ element off of it ( over 100x faster! )
 ``` elixir
 # mix run test/performance.exs
 
-IO.puts "#{inspect :timer.tc(EQueue.Performance, :test_queue, [[]])}"
+IO.puts "#{inspect :timer.tc(EQ.Performance, :test_queue, [[]])}"
 #> {21163189, :ok}
 
-IO.puts "#{inspect :timer.tc(EQueue.Performance, :test_queue, [EQueue.new])}"
+IO.puts "#{inspect :timer.tc(EQ.Performance, :test_queue, [EQ.new])}"
 #> {189986, :ok}
 ```
 
