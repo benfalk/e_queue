@@ -1,20 +1,20 @@
-defimpl Collectable, for: EQueue do
+defimpl Collectable, for: EQ do
   @doc """
   Allows you to push values into a queue following FIFO order
 
   == Examples
-  iex> 1..5 |> Enum.into(EQueue.new)
-  #EQueue<[1, 2, 3, 4, 5]>
+  iex> 1..5 |> Enum.into(EQ.new)
+  #EQ<[1, 2, 3, 4, 5]>
 
-  iex> 6..8 |> Enum.into(EQueue.from_list([1,2]))
-  #EQueue<[1, 2, 6, 7, 8]>
+  iex> 6..8 |> Enum.into(EQ.from_list([1,2]))
+  #EQ<[1, 2, 6, 7, 8]>
 
-  iex> %{a: :bear, b: :cute} |> Enum.into(EQueue.new)
-  #EQueue<[a: :bear, b: :cute]>
+  iex> %{a: :bear, b: :cute} |> Enum.into(EQ.new)
+  #EQ<[a: :bear, b: :cute]>
   """
-  def into(queue = %EQueue{}), do: {queue, &into(&1, &2)} 
+  def into(queue = %EQ{}), do: {queue, &into(&1, &2)} 
 
-  defp into(queue = %EQueue{}, {:cont, item}), do: queue |> EQueue.push(item)
-  defp into(queue = %EQueue{}, :done), do: queue
+  defp into(queue = %EQ{}, {:cont, item}), do: queue |> EQ.push(item)
+  defp into(queue = %EQ{}, :done), do: queue
   defp into(_, :halt), do: nil
 end

@@ -1,15 +1,15 @@
-defmodule EQueue.Mixfile do
+defmodule EQ.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :e_queue,
-     version: "1.0.1",
+    [app: :e_q,
+     version: "1.0.0",
      elixir: "~> 1.1",
-     description: description,
-     package: package,
+     description: description(),
+     package: package(),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps()]
   end
 
   # Configuration for the OTP application
@@ -46,8 +46,9 @@ defmodule EQueue.Mixfile do
 
   defp package do
     [
-      maintainers: ["Benjamin Falk"],
-      links: %{"GitHub" => "https://github.com/benfalk/e_queue"},
+      name: "e_q",
+      maintainers: ["Christopher Bertels"],
+      links: %{"GitHub" => "https://github.com/bakkdoor/e_q"},
       licenses: ["MIT License"]
     ]
   end
